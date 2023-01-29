@@ -3,11 +3,11 @@ const { query } = require('express');
 const express = require('express');
 const sqlite3 = require('sqlite3');
 const create = require('./createddb');
-const router = express.Router()
+const router = express.Router();
 
 // start the app
 const app = express();
-// data will be  sent in the request body
+// data will be sent in the request body
 app.use(express.json());
 
 // for serving static files
@@ -237,7 +237,6 @@ router.delete('/courses/:courid/exercises/:exer_id/submission/:submid',(req,res)
         }
     })
 })
-
 
 app.use('/api', router);
 
