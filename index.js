@@ -130,16 +130,29 @@ router.post('/exercises',(req,res)=>{
         else{
             for (let exercise of exercises) {
                 if (exercise.childExercises) {
-                    db.run('INSERT INTO exercises (name, logo, description, course_id, childExercises) VALUES(" ' + exercise.name + ' " , " ' + exercise.logo + ' ", "'+ exercise.short_description +'" ,"'+ course_id+' ", "'+ JSON.stringify(exercise.childExercises)+' ")');
+                    db.run('INSERT INTO exercises (name, logo, description, course_id, childExercises) VALUES(" ' + exercise.name + ' " , " ' + exercise.logo + ' ", "'+ exercise.description +'" ,"'+ course_id+' ", "'+ JSON.stringify(exercise.childExercises)+' ")');
 
                 } else  {
-                    db.run('INSERT INTO exercises (name, logo, description, course_id) VALUES(" ' + exercise.name + ' " , " ' + exercise.logo + ' ", "'+ exercise.short_description +'" ,"'+ course_id+' ")');
+                    db.run('INSERT INTO exercises (name, logo, description, course_id) VALUES(" ' + exercise.name + ' " , " ' + exercise.logo + ' ", "'+ exercise.description +'" ,"'+ course_id+' ")');
                 }
             }
             db.close();   
             return res.send(`Exercise for course id ${course_id} has been added successfully`)
         }
     })
+})
+
+router.delete("/courses/:courseId/exercises", (req, res, next) => {
+        let db = new sqlite3.Database('saralDB',(err)=>{
+            if(err){
+                console.log('something going wrong while deleting exercise',err)
+            }
+            else{
+                db.run('DELETE FROM exercises where course_id='+req.params.courseId);
+                db.close();   
+                return res.send(`exercise ${req.params.courseId} has been added successfully`)
+            }
+        })
 })
 
 router.put('/courses/:courseid/exercises',(req,res)=>{
