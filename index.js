@@ -3,6 +3,7 @@ const { query } = require('express');
 const express = require('express');
 const sqlite3 = require('sqlite3');
 const create = require('./createddb');
+const router = express.Router()
 
 // start the app
 const app = express();
@@ -13,7 +14,7 @@ app.use(express.json());
 // app.use(express.static('public'));
 
 // get method for getting the whole data stored in courses or exercise
-app.get('/courses',(req,res)=>{
+router.get('/courses',(req,res)=>{
    let db = new sqlite3.Database('saralDB',(err)=>{
        if(!err){
            db.all('select * from courses',(err,data)=>{
@@ -28,7 +29,7 @@ app.get('/courses',(req,res)=>{
    })
 });
 
-app.get('/courses/:id',(req,res)=>{
+router.get('/courses/:id',(req,res)=>{
     let db = new sqlite3.Database('saralDB',(err)=>{
         if(!err){
             db.all('select * from courses where id = '+req.params.id,(err,data)=>{
@@ -43,7 +44,7 @@ app.get('/courses/:id',(req,res)=>{
     })
 });
 
-app.post('/courses',(req,res)=>{
+router.post('/courses',(req,res)=>{
     let courses = req.body
     let db = new sqlite3.Database('saralDB',(err)=>{
         if (err) {
@@ -59,7 +60,7 @@ app.post('/courses',(req,res)=>{
     })
 });
 
-app.put('/course/:id',(req,res)=>{
+router.put('/course/:id',(req,res)=>{
     let name = req.body.name
     let description = req.body.description
     let db = new sqlite3.Database('saralDB',(err)=>{
@@ -71,7 +72,7 @@ app.put('/course/:id',(req,res)=>{
     })
 });
 
-app.get('/exercises',(req,res)=>{
+router.get('/exercises',(req,res)=>{
     let db = new sqlite3.Database('saralDB',(err)=>{
         if(err){
             console.log("you are getting error",err)
@@ -94,7 +95,7 @@ app.get('/exercises',(req,res)=>{
     })
 });
 
-app.get('/courses/:courseid/exercises',(req,res)=>{
+router.get('/courses/:courseid/exercises',(req,res)=>{
     const course_id = req.params.courseid ? parseInt(req.params.courseid) : 1
     let db = new sqlite3.Database('saralDB',(err)=>{
         if(err){
@@ -119,7 +120,7 @@ app.get('/courses/:courseid/exercises',(req,res)=>{
     })
 });
 
-app.post('/exercises',(req,res)=>{
+router.post('/exercises',(req,res)=>{
     let exercises = req.body.exercises;
     let course_id = req.body.course_id
     let db = new sqlite3.Database('saralDB',(err)=>{
@@ -141,7 +142,7 @@ app.post('/exercises',(req,res)=>{
     })
 })
 
-app.put('/courses/:courseid/exercises',(req,res)=>{
+router.put('/courses/:courseid/exercises',(req,res)=>{
     let exercises = req.body
     let db = new sqlite3.Database('saralDB',(err)=>{
         if(!err){
@@ -186,7 +187,7 @@ app.put('/courses/:courseid/exercises',(req,res)=>{
     })
 })
 
-app.get('/submissions',(req,res)=>{
+router.get('/submissions',(req,res)=>{
     let db = new sqlite3.Database('saralDB',(err)=>{
         if(!err){
             db.all('select * from submissions',(err,data)=>{
@@ -202,7 +203,7 @@ app.get('/submissions',(req,res)=>{
     })
 })
 
-app.post('/courses/:courseid/exercises/:exerciseid/submission',(req,res)=>{
+router.post('/courses/:courseid/exercises/:exerciseid/submission',(req,res)=>{
     let name = req.body.name
     let exercise = req.body.description
     let db = new sqlite3.Database('saralDB',(err)=>{
@@ -217,7 +218,7 @@ app.post('/courses/:courseid/exercises/:exerciseid/submission',(req,res)=>{
     })
 })
 
-app.delete('/courses/:courid/exercises/:exer_id/submission/:submid',(req,res)=>{
+router.delete('/courses/:courid/exercises/:exer_id/submission/:submid',(req,res)=>{
     let db = new sqlite3.Database('saralDB',(err)=>{
         if(!err){
             console.log('select * from submissions where course_id="'+req.params.courid+'" and exercise_id="'+req.params.exer_id+'"')
@@ -237,6 +238,8 @@ app.delete('/courses/:courid/exercises/:exer_id/submission/:submid',(req,res)=>{
     })
 })
 
+
+app.use('/api', router);
 
 app.listen(2050,()=>{
     console.log('your app is listening: http://localhost:2050')
