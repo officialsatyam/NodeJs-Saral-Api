@@ -52,7 +52,7 @@ router.post('/courses',(req,res)=>{
         }
         else {
             for (let course of courses) {
-                db.run('INSERT INTO courses (code, name, logo, description) VALUES (" ' +course.code + ' " , " ' + course.name + ' ", "' + course.logo + '", "'+ course.description +'" )');
+                db.run('INSERT INTO courses (code, name, logo, description) VALUES ("' +course.code + ' " , "' + course.name + ' ", "' + course.logo + '", "'+ course.description +'" )');
             }
             db.close();
             return res.send('Course has been added successfully')
@@ -130,10 +130,12 @@ router.post('/exercises',(req,res)=>{
         else{
             for (let exercise of exercises) {
                 if (exercise.childExercises) {
-                    db.run('INSERT INTO exercises (name, logo, description, course_id, childExercises) VALUES(" ' + exercise.name + ' " , " ' + exercise.logo + ' ", "'+ exercise.description +'" ,"'+ course_id+' ", "'+ JSON.stringify(exercise.childExercises)+' ")');
+                    const query = `INSERT INTO exercises (name, logo, description, course_id, childExcercises) VALUES(${exercise.name}, ${exercise.logo}), ${exercise.description}, ${course_id}, '${JSON.stringify(exercise.childExcercises)}'`;
+                    console.log(query);
+                    db.run(`INSERT INTO exercises (name, logo, description, course_id, childExcercises) VALUES(${exercise.name}, ${exercise.logo}), ${exercise.description}, ${course_id}, '${JSON.stringify(exercise.childExcercises)}'`);
 
                 } else  {
-                    db.run('INSERT INTO exercises (name, logo, description, course_id) VALUES(" ' + exercise.name + ' " , " ' + exercise.logo + ' ", "'+ exercise.description +'" ,"'+ course_id+' ")');
+                    db.run('INSERT INTO exercises (name, logo, description, course_id) VALUES("' + exercise.name + ' " , "' + exercise.logo + ' ", "'+ exercise.description +'" ,"'+ course_id+' ")');
                 }
             }
             db.close();   
